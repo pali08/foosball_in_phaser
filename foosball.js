@@ -8,6 +8,11 @@ var config = {
             debug: false
         }
     },
+    scale: {
+        mode: Phaser.Scale.FIT,
+        // Center vertically and horizontally
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     scene: {
         preload: preload,
         create: create,
@@ -24,7 +29,7 @@ let keyS;
 const playerShift = 40;
 const worldPlayerBoundaryDistance = 30;
 const playerVelocity = 160;
-const playerReductionRatio = 1/5;
+const playerReductionRatio = 1 / 5;
 
 function preload() {
     this.load.image('playground', 'assets/playground.jpeg');
