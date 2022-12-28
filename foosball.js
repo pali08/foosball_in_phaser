@@ -26,6 +26,7 @@ var player;
 var gameOver = false;
 var keyW;
 let keyS;
+var ball;
 const playerShift = 40;
 const worldPlayerBoundaryDistance = 30;
 const playerVelocity = 160;
@@ -35,7 +36,7 @@ function preload() {
     this.load.image('playground', 'assets/playground.jpeg');
     this.load.image('player_blue', 'assets/player_blue.png');
     this.load.image('player_red', 'assets/player_red.png');
-
+    this.load.image('ball', 'assets/ball.png')
 
 
 }
@@ -54,9 +55,21 @@ function create() {   // playground
         [config.width * 3 / 4 - playerShift, config.height / 3],
         [config.width * 3 / 4 - playerShift, config.height * 2 / 3]],
         -90, this);
+    // redPlayers.setImmovable();
+    // bluePlayers.setImmovable();
 
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+
+    ball = this.physics.add.sprite(config.width/2, config.height/2, 'ball');
+    ball.displayHeight = ball.height/100;
+    ball.displayWidth = ball.width/100;
+    ball.setBounce(1);
+    ball.setCollideWorldBounds(true);
+    // ball.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    ball.setVelocity(150, 0);
+    this.physics.add.collider(bluePlayers, ball);
+    this.physics.add.collider(redPlayers, ball);
 }
 function update() {
 
@@ -78,7 +91,7 @@ function createPlayers(imageName, positions, rotation, object) {
         player.displayWidth = player.width * playerReductionRatio;
         player.angle = player.angle + rotation;
         players.add(player);
-
+        player.setImmovable();
     }
     console.log(players.getChildren()[0].y);
     return players;
