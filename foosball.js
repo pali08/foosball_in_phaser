@@ -24,6 +24,8 @@ var bluePlayers;
 var redPlayers;
 var player;
 var gameOver = false;
+var keyW;
+let keyS;
 
 function preload() {
     this.load.image('playground', 'assets/playground.jpeg');
@@ -41,21 +43,31 @@ function create() {   // playground
     bluePlayers = createPlayers('player_blue', [[40, 300], [240, 200], [240, 400]], 90, this);
     redPlayers = createPlayers('player_red', [[760, 300], [560, 200], [560, 400]], -90, this);
     //player = this.add.sprite(40, 300, 'player_blue');
+
+    keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 }
 function update() {
+
+
     if (gameOver) {
         return;
     }
     cursors = this.input.keyboard.createCursorKeys();
-    if (cursors.up.isDown) {
-        bluePlayers.setVelocityY(-160);
-        //player.setVelocityX(-160);
-        //bluePlayers.anims.play('left', true);
-    }
-    else if (cursors.down.isDown) {
-        bluePlayers.setVelocityY(160);
-        //player.anims.play('right', true);
-    }
+    handleKeyboardInput(cursors.up, cursors.down, redPlayers);
+    handleKeyboardInput(keyW, keyS, bluePlayers);
+    // if (cursors.up.isDown) {
+    //     bluePlayers.setVelocityY(-160);
+    // }
+    // else if (cursors.down.isDown) {
+    //     bluePlayers.setVelocityY(160);
+    // }
+    // else if (cursors.up.isUp) {
+    //     bluePlayers.setVelocityY(0);
+    // }
+    // else if (cursors.down.isUp) {
+    //     bluePlayers.setVelocityY(0);
+    // }
 }
 
 function createPlayers(imageName, positions, rotation, object) {
@@ -70,4 +82,20 @@ function createPlayers(imageName, positions, rotation, object) {
         players.add(player);
     }
     return players;
+}
+
+function handleKeyboardInput(cursorsUp, cursorsDown, players) {
+    if (cursorsUp.isDown) {
+        players.setVelocityY(-160);
+    }
+    else if (cursorsDown.isDown) {
+        players.setVelocityY(160);
+    }
+    else if (cursorsUp.isUp) {
+        players.setVelocityY(0);
+    }
+    else if (cursorsDown.isUp) {
+        players.setVelocityY(0);
+    }
+
 }
