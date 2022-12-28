@@ -21,6 +21,10 @@ var player;
 var gameOver = false;
 var keyW;
 let keyS;
+const playerShift = 40;
+const worldPlayerBoundaryDistance = 30;
+const playerVelocity = 160;
+const playerReductionRatio = 1/5;
 
 function preload() {
     this.load.image('playground', 'assets/playground.jpeg');
@@ -28,16 +32,24 @@ function preload() {
     this.load.image('player_red', 'assets/player_red.png');
 
 
-    
+
 }
 function create() {   // playground
-    var playground = this.add.image(400, 300, 'playground');
-    playground.displayWidth = 800;
-    playground.displayHeight = 600;
+    var playground = this.add.image(config.width / 2, config.height / 2, 'playground');
+    playground.displayWidth = config.width;
+    playground.displayHeight = config.height;
 
-    bluePlayers = createPlayers('player_blue', [[40, 300], [240, 200], [240, 400]], 90, this);
-    redPlayers = createPlayers('player_red', [[760, 300], [560, 200], [560, 400]], -90, this);
-    
+    bluePlayers = createPlayers('player_blue',
+        [[playerShift, config.height / 2],
+        [config.width / 4 + playerShift, config.height / 3],
+        [config.width / 4 + playerShift, config.height * 2 / 3]],
+        90, this);
+    redPlayers = createPlayers('player_red',
+        [[config.width - playerShift, config.height / 2],
+        [config.width * 3 / 4 - playerShift, config.height / 3],
+        [config.width * 3 / 4 - playerShift, config.height * 2 / 3]],
+        -90, this);
+
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 }
@@ -57,8 +69,8 @@ function createPlayers(imageName, positions, rotation, object) {
     var players = object.physics.add.group();
     for (var i = 0; i < positions.length; ++i) {
         var player = object.physics.add.sprite(positions[i][0], positions[i][1], imageName);
-        player.displayHeight = player.height / 5
-        player.displayWidth = player.width / 5
+        player.displayHeight = player.height * playerReductionRatio;
+        player.displayWidth = player.width * playerReductionRatio;
         player.angle = player.angle + rotation;
         players.add(player);
 
@@ -68,21 +80,20 @@ function createPlayers(imageName, positions, rotation, object) {
 }
 
 function handleKeyboardInput(cursorsUp, cursorsDown, players) {
-    if (cursorsUp.isDown 
+    if (cursorsUp.isDown
         // https://phaser.discourse.group/t/how-do-i-make-a-group-collide-with-world-bounds/2448
         // I tried to set boundaries by //player.body.setCollideWorldBounds(true);
         // but it does set bonds to individual members of group - i.e. first player hits edge, but others
         // are still moving until they hit edge too
         // additional note: setColliderWorldBounds need to be set AFTER player is added to group
-        && players.getChildren()[1].y > 30
-        ) 
-        {
-        players.setVelocityY(-160);
+        && players.getChildren()[1].y > worldPlayerBoundaryDistance
+    ) {
+        players.setVelocityY(-playerVelocity);
     }
     else if (cursorsDown.isDown
-        && players.getChildren()[2].y < 570
-        ) {
-        players.setVelocityY(160);
+        && players.getChildren()[2].y < config.height - worldPlayerBoundaryDistance
+    ) {
+        players.setVelocityY(playerVelocity);
     }
     else if (cursorsUp.isUp) {
         players.setVelocityY(0);
