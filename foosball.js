@@ -16,10 +16,14 @@ var config = {
     scene: {
         preload: preload,
         create: create,
-        //update: update
+        update: update
     }
 };
 var game = new Phaser.Game(config);
+var bluePlayers;
+var redPlayers;
+var player;
+var gameOver = false;
 
 function preload() {
     this.load.image('playground', 'assets/playground.jpeg');
@@ -27,33 +31,43 @@ function preload() {
     this.load.image('player_red', 'assets/player_red.png');
     // this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 }
-    function create ()
-    {   // playground
-        var playground = this.add.image(400, 300, 'playground');
-        playground.displayWidth=800;
-        playground.displayHeight=600;
-        //playground.width=800;
-        //playground.height=600;
+function create() {   // playground
+    var playground = this.add.image(400, 300, 'playground');
+    playground.displayWidth = 800;
+    playground.displayHeight = 600;
+    //playground.width=800;
+    //playground.height=600;
 
-        //blue players
-        blue_players = this.physics.add.group();
-        blue_players_placements = [[40,300], [240, 200], [240, 400]]
-        for (var i=0; i<3; i++) {
-            var player_blue = this.add.sprite(blue_players_placements[i][0], blue_players_placements[i][1], 'player_blue');
-            player_blue.displayHeight = player_blue.height/5
-            player_blue.displayWidth = player_blue.width/5
-            player_blue.angle += 90;
-            blue_players.add(player_blue);
-        }
-        //red players
-        red_players = this.physics.add.group();
-        red_players_placements = [[760,300], [560, 200], [560, 400]]
-        for (var i=0; i<3; i++) {
-            var player_red = this.add.sprite(red_players_placements[i][0], red_players_placements[i][1], 'player_red');
-            player_red.displayHeight = player_red.height/5
-            player_red.displayWidth = player_red.width/5
-            player_red.angle -= 90;
-            red_players.add(player_red);
-        }
+    bluePlayers = createPlayers('player_blue', [[40, 300], [240, 200], [240, 400]], 90, this);
+    redPlayers = createPlayers('player_red', [[760, 300], [560, 200], [560, 400]], -90, this);
+    //player = this.add.sprite(40, 300, 'player_blue');
+}
+function update() {
+    if (gameOver) {
+        return;
     }
+    cursors = this.input.keyboard.createCursorKeys();
+    if (cursors.up.isDown) {
+        bluePlayers.setVelocityY(-160);
+        //player.setVelocityX(-160);
+        //bluePlayers.anims.play('left', true);
+    }
+    else if (cursors.down.isDown) {
+        bluePlayers.setVelocityY(160);
+        //player.anims.play('right', true);
+    }
+}
 
+function createPlayers(imageName, positions, rotation, object) {
+
+    players = object.physics.add.group();
+    //players_placements = [[760, 300], [560, 200], [560, 400]]
+    for (var i = 0; i < positions.length; ++i) {
+        var player = object.add.sprite(positions[i][0], positions[i][1], imageName);
+        player.displayHeight = player.height / 5
+        player.displayWidth = player.width / 5
+        player.angle = player.angle + rotation;
+        players.add(player);
+    }
+    return players;
+}
