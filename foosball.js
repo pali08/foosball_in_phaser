@@ -73,10 +73,11 @@ function create() {   // playground
 }
 function update() {
 
-
+    console.log("asdf");
     if (gameOver) {
         return;
     }
+    resetBallVelocity();
     cursors = this.input.keyboard.createCursorKeys();
     handleKeyboardInput(cursors.up, cursors.down, redPlayers);
     handleKeyboardInput(keyW, keyS, bluePlayers);
@@ -120,4 +121,14 @@ function handleKeyboardInput(cursorsUp, cursorsDown, players) {
         players.setVelocityY(0);
     }
 
+}
+
+function resetBallVelocity() {
+    var vec = new Phaser.Math.Vector2();
+    vec.x = ball.body.velocity.x;
+    vec.y = ball.body.velocity.y;
+    vec.setLength(213);
+    ball.body.velocity.x = vec.x;
+    ball.body.velocity.y = vec.y;
+    console.log(vec.length());
 }
