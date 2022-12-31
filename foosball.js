@@ -73,10 +73,11 @@ function create() {   // playground
 }
 function update() {
 
-    console.log("asdf");
     if (gameOver) {
         return;
     }
+    resetDistanceFrontPlayers(bluePlayers);
+    resetDistanceFrontPlayers(redPlayers);
     resetBallVelocity();
     cursors = this.input.keyboard.createCursorKeys();
     handleKeyboardInput(cursors.up, cursors.down, redPlayers);
@@ -93,8 +94,9 @@ function createPlayers(imageName, positions, rotation, object) {
         player.angle = player.angle + rotation;
         players.add(player);
         player.setImmovable();
+        //players.setCollideWorldBounds(true);
     }
-    console.log(players.getChildren()[0].y);
+    players.onWorldBounds = false;
     return players;
 }
 
@@ -130,5 +132,10 @@ function resetBallVelocity() {
     vec.setLength(213);
     ball.body.velocity.x = vec.x;
     ball.body.velocity.y = vec.y;
-    console.log(vec.length());
+}
+
+function resetDistanceFrontPlayers(players) {
+    if (players.getChildren()[2].y - players.getChildren()[1].y < (config.height/3)) {
+        players.getChildren()[1].y = players.getChildren()[2].y - (config.height/3)
+    }
 }
