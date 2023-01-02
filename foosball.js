@@ -31,19 +31,32 @@ const playerShift = 40;
 const worldPlayerBoundaryDistance = 30;
 const playerVelocity = 160;
 const playerReductionRatio = 1 / 5;
+const gateBarWidth = 9;
+var scoreTextBlue;
+var scoreTextRed;
+var scoreBlue = 0;
+var scoreRed = 0;
+var gateBarBlue;
+var gateBarRed;
 
 function preload() {
     this.load.image('playground', 'assets/playground.jpeg');
     this.load.image('player_blue', 'assets/player_blue.png');
     this.load.image('player_red', 'assets/player_red.png');
     this.load.image('ball', 'assets/ball.png')
-
+    this.load.image('gate_bar', 'assets/gate_bar.jpeg')
 
 }
 function create() {   // playground
     var playground = this.add.image(config.width / 2, config.height / 2, 'playground');
     playground.displayWidth = config.width;
     playground.displayHeight = config.height;
+
+    gateBarBlue = this.physics.add.image(gateBarWidth, config.height / 2, 'gate_bar');
+    gateBarRed = this.physics.add.image(config.width - gateBarWidth, config.height / 2, 'gate_bar');
+    gateBarBlue.displayHeight = config.height * 140 / 550;
+    gateBarRed.displayHeight = config.height * 140 / 550;
+    //gateBarRed.displayWidth = config.width;
 
     bluePlayers = createPlayers('player_blue',
         [[playerShift, config.height / 2],
@@ -61,15 +74,22 @@ function create() {   // playground
     keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 
-    ball = this.physics.add.sprite(config.width/2, config.height/2, 'ball');
-    ball.displayHeight = ball.height/100;
-    ball.displayWidth = ball.width/100;
+    ball = this.physics.add.sprite(config.width / 2, config.height / 2, 'ball');
+    ball.displayHeight = ball.height / 100;
+    ball.displayWidth = ball.width / 100;
     ball.setBounce(1);
     ball.setCollideWorldBounds(true);
     // ball.setVelocity(Phaser.Math.Between(-200, 200), 20);
     ball.setVelocity(150, 0);
     this.physics.add.collider(bluePlayers, ball);
     this.physics.add.collider(redPlayers, ball);
+
+    scoreTextBlue = this.add.text(8, 8, 'score blue: 0', { fontSize: '16px', fill: '#000' });
+    scoreTextRed = this.add.text(8, 24, 'score red: 0', { fontSize: '16px', fill: '#000' });
+    gateBarBlue.setImmovable();
+    gateBarRed.setImmovable();
+    this.physics.add.collider(gateBarRed, ball, goalBlue, null, this);
+    this.physics.add.collider(gateBarBlue, ball, goalRed, null, this);
 }
 function update() {
 
@@ -135,7 +155,23 @@ function resetBallVelocity() {
 }
 
 function resetDistanceFrontPlayers(players) {
-    if (players.getChildren()[2].y - players.getChildren()[1].y < (config.height/3)) {
-        players.getChildren()[1].y = players.getChildren()[2].y - (config.height/3)
+    if (players.getChildren()[2].y - players.getChildren()[1].y < (config.height / 3)) {
+        players.getChildren()[1].y = players.getChildren()[2].y - (config.height / 3)
     }
+}
+
+function goalBlue() {
+    scoreBlue += 10;
+    scoreTextBlue.setText('score blue: ' + scoreBlue);
+    ball.x=400;
+    ball.y = 300;
+    ball.setVelocity(-150,0)
+}
+
+function goalRed() {
+    scoreRed += 10;
+    scoreTextRed.setText('score red: ' + scoreRed);
+    ball.x=400;
+    ball.y = 300;
+    ball.setVelocity(150,0)
 }
