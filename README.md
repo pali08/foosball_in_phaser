@@ -5,7 +5,7 @@ This is simple foosball/table football game for two players on one PC. Red playe
 
 The game needs to run on server, e.g. simple python http server. Execution is:
 ```
-cd /path/to/foosball_in_phaser
-python3 -m http.server 8081
+$ cd /path/to/foosball_in_phaser
+$ python3 -m http.server 8081
 ```
 There are other possible ways, but using python3 build in simple http server is the most simple option
