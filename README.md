@@ -8,4 +8,10 @@ The game needs to run on server, e.g. simple python http server. Execution is:
 $ cd /path/to/foosball_in_phaser
 $ python3 -m http.server 8081
 ```
-There are other possible ways, but using python3 build in simple http server is the most simple option
+There are other possible ways, but using python3 build in simple http server is the most simple option.
+
+Then in browser got to
+```
+localhost:8081
+# localhost can be replaced with ip address if browser runs on other PC
+```
